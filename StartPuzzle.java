@@ -5,93 +5,81 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class StartPuzzle {
-    // Move board as an instance variable
+    //Clasa Board Display extinde JPanel
     private static BoardDisplay board;
 
     public static void main(String[] args) {
-        // Create the frame
-        JFrame frame = new JFrame("Number Puzzle");
+        //
+        JFrame frame = new JFrame("Puzzle cu numere");
 
-        // Dynamically set the size of the frame
-        int defaultBoardSize = 400; // Fixed board size for now
-        frame.setSize(defaultBoardSize + 200, defaultBoardSize + 200); // Add padding
+        //Se setează dimensiunile panoului. Pe viitor îl facem dinamic
+        int defaultBoardSize = 400; 
+        frame.setSize(defaultBoardSize + 200, defaultBoardSize + 200); // + 200 să nu vină fix pe margini.
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
         frame.setLocationRelativeTo(null);
 
-        // **Create a panel for input and buttons, set layout to FlowLayout**
+        //Se creează panoul pentru butoane
         JPanel topPanel = new JPanel();
-        topPanel.setLayout(new FlowLayout());  // Use FlowLayout for horizontal arrangement
-        topPanel.setBounds(100, 20, defaultBoardSize, 60); // Set the bounds of the panel
+        topPanel.setLayout(new FlowLayout());  // Se folosește pentru aranjarea pe orizontală
+        topPanel.setBounds(100, 20, defaultBoardSize, 60); // Setăm poziția panoului
         frame.add(topPanel);
 
-        // **Input field for grid size**
+        //Căsuța de intrare pentru dimensiunile jocului
         JTextField gridSizeField = new JTextField();
-        gridSizeField.setColumns(5);  // Set the number of columns for input box
-        topPanel.add(gridSizeField);  // Add the input box to the top panel
+        gridSizeField.setColumns(2);  // Numărul de coloane pentru căsuta de intrare
+        gridSizeField.setText("3"); 
+        topPanel.add(gridSizeField);  
 
-        // **Button to generate the puzzle**
-        JButton generateButton = new JButton("Generate Puzzle");
-        topPanel.add(generateButton);  // Add the button to the top panel
-
-        // **Shuffle button**
-        JButton shuffleButton = new JButton("Shuffle");
-        topPanel.add(shuffleButton);  // Add the shuffle button to the top panel
-        
-        
+        // Butonul care generează puzzle-ul
+        JButton generateButton = new JButton("Genereaza Puzzle");
+        topPanel.add(generateButton);  
+      
         // Butonul care lansează algoritmul de găsire a soluțiilor
         JButton simulateButton = new JButton("Rezolva");
-        topPanel.add(simulateButton);  // Add the shuffle button to the top panel
+        topPanel.add(simulateButton);  
 
-        // Initially set gridSize to 4 (or any valid default)
-        int[] gridSize = {4}; // Use an array to make gridSize mutable
+        // Initial panoul are 3 randuri si 3 coloane. La 4 deja sta prea mult sa gaseasca solutia
+        int[] gridSize = {3}; // Use an array to make gridSize mutable
         board = new BoardDisplay(gridSize[0], defaultBoardSize);  // Initialize the board here
         board.setBounds(100, 120, defaultBoardSize, defaultBoardSize); // Set board position
         frame.add(board);
 
-        // **ActionListener for generate button**
+        //Acțiunea pentru butonul ce genereaza panoul
         generateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    int newGridSize = Integer.parseInt(gridSizeField.getText()); // Get grid size from input
+                    int newGridSize = Integer.parseInt(gridSizeField.getText()); // Se preia valoarea de la căsuta te intrare
 
-                    // **Validation for even number and max 20**
-                    if (newGridSize % 2 != 0 || newGridSize > 20 || newGridSize < 4) {
-                        JOptionPane.showMessageDialog(frame, "Please enter an even number between 4 and 20.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                    //Validam sa fie mai mic de 10, nu are sens, e oricum prea mare, dar pentru demonstratie
+                    	if (newGridSize > 10 || newGridSize < 2) {
+                        JOptionPane.showMessageDialog(frame, "Adauga un numar intre 2 si 10", "Numar invalid", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        // **Update gridSize and re-initialize the board**
-                        gridSize[0] = newGridSize; // Update the grid size inside the array
+                        //Actualizare dimensiune si reinitializare
+                        gridSize[0] = newGridSize; 
 
-                        // Remove previous board and add the new one
-                        frame.remove(board);  // Remove the previous board
-                        board = new BoardDisplay(gridSize[0], defaultBoardSize); // Create a new BoardDisplay
-                        board.setBounds(100, 120, defaultBoardSize, defaultBoardSize); // Set the new board position
-                        frame.add(board);  // Add the new board to the frame
+                        //Stergem panoul dinainte si il adaugam pe cel nou
+                        frame.remove(board);  
+                        board = new BoardDisplay(gridSize[0], defaultBoardSize); 
+                        board.setBounds(100, 120, defaultBoardSize, defaultBoardSize); 
+                        frame.add(board);  
 
-                        frame.revalidate(); // Revalidate the frame
-                        frame.repaint(); // Repaint the frame to reflect changes
+                        frame.revalidate(); 
+                        frame.repaint(); 
                     }
                 } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(frame, "Please enter a valid number.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "Adauga un numar.", "Numar invalid", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
-        // **ActionListener for shuffle button**
-        shuffleButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                board.shufflePuzzle(); // Shuffle the puzzle
-            }
-        });
 
         // Acțiunea pentru butonul Rezolva
         simulateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                board.simulatePuzzle(); // Apelează metoda pentru găsirea unei soluții
-               // JOptionPane.showMessageDialog(frame, "Apasat");
+                board.simulatePuzzle(); // Apelează metoda pentru găsirea si simularea unei solutii
             }
         });
 
